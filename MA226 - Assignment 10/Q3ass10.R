@@ -1,0 +1,69 @@
+mu<-function(t){
+
+	return(0.0325 - 0.05*t)
+}
+
+sigma<-function(t){
+
+	return(0.012 + 0.0138*t + 0.00125*(t^2))
+}
+
+brownian_motion<-function(num){		#num is the number of sample paths required
+
+	set.seed(345989)
+	Z<-rnorm(5000*num)
+	Y<-vector()
+	
+	count <- 1
+	Interval<-5/5000
+	col<-0
+	sum_y2<-0
+	sum_y5<-0
+
+	svg("Q3.svg")			#Scalable Vector Graphics (SVG) Format
+
+	while(count <= (num*5000)){
+
+		temp_count<-0
+		t<-1
+		Y[1]<-5
+		time<-0
+
+		while(temp_count < 5000){
+
+			Y[t+1] <- Y[t] + sigma(time)*sqrt(Interval)*Z[count] + mu(time)*(Interval)
+			temp_count<-temp_count+1
+			t<-t+1
+			count<-count+1
+			time<-time+Interval
+		}
+
+		sum_y2<-sum_y2 + Y[2000]
+		sum_y5<-sum_y5 + Y[5000]
+	
+		if(col == 0){
+
+			plot(Y, type = "l", col = col, ylim = c(4, 5.5), xaxt = "n", xlab = "Time (t) ----------------------->", ylab = "Y(t)   [Brownian Motion Variate] ----------------------->", main = paste("Combined Plot of 10 Sample BROWNIAN MOTION Paths [Y(0) = 5]\nUsing Euler Approximated Recursion\nTime Interval = [0,5]"), sub = bquote("\n\n"~bold(mu)==.("0.0325 - 0.05t")~", "~sigma==.("0.012 + 0.0138t + 0.00125t^2")))
+
+			axis(side = 1,at = c(0,1000,2000,3000,4000,5000),labels = c(0,1,2,3,4,5))
+		}
+	
+		else
+			lines(Y, type = "l", col = col, lwd = 0.7)
+		
+		
+		par(new=TRUE)
+		
+		grid()
+		col<-col+1
+	}
+
+	dev.off()	
+
+	print(paste("Expected Value of Y[2] : ", sum_y2/10), quote = FALSE)
+	print(paste("Expected Value of Y[5] : ", sum_y5/10), quote = FALSE)
+}
+
+brownian_motion(10)
+
+

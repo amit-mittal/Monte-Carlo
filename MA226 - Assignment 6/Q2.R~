@@ -1,0 +1,68 @@
+generateboxmuller<-function(num){
+
+a<-c(16807,950706376)
+m<-c((2^31)-1, (2^31)-1)
+y<-c(11,11)
+u<-array(2)
+z<-array(2)
+v<-array(2)
+arrayhistz<-array()
+arrayhistv<-array()
+countnum<-0
+
+   while(countnum < num){
+	y[1]<-(a[1]*y[1])%%m[1]
+	y[2]<-(a[2]*y[2])%%m[2]
+	u[1]<-y[1]/m
+	u[2]<-y[2]/m
+
+	R<-(-2)*log(u[1])
+	V<-(2*pi*u[2])
+	z[1]<-sqrt(R)*cos(V)
+	z[2]<-sqrt(R)*sin(V)
+	z[1]<-z[1]*sqrt(5)
+	z[2]<-z[2]*sqrt(5)
+	v[1]<-z[1]+5
+	v[2]<-z[2]+5
+	
+	countnum<-countnum+1
+	arrayhistz[countnum]<-z[1]
+	arrayhistv[countnum]<-v[1]
+	countnum<-countnum+1
+	arrayhistz[countnum]<-z[2]
+	arrayhistv[countnum]<-v[2]
+	
+	print(z[1])
+	print(z[2])
+	print(v[1])
+	print(v[2])
+   }
+   
+   print(paste("The Variance of random numbers (mean = 0) : ", var(arrayhistz)), quote = FALSE)
+   print(paste("The Variance of random numbers (mean = 5) : ", var(arrayhistv)), quote = FALSE)
+   print("The summary of the random numbers (mean = 0) : ", quote = FALSE)
+   print(summary(arrayhistz))
+   print("The summary of the random numbers (mean = 5) : ", quote = FALSE)
+   print(summary(arrayhistv))
+   #hist(arrayhistv, 100, xlab = "Random Numbers (Z) ------->", ylab = "Frequency of the Random Numbers ------->", col = rgb(1, 0, 1, 0.1), main = paste("HISTOGRAM OF FREQUENCIES (Box-Muller Method) \nNORMAL DISTRIBUTION [N(5,5)] : Mean = 5, Var = 5 :\nNumber of values generated = ", num, "[100 INTERVALS]"))
+   #dev.copy(jpeg, "Q22(3).jpeg")
+   #dev.off()
+   
+   #plot(ecdf(arrayhistz), verticals = TRUE, lwd = 2, pch = 46, col = "blue", xlab = "X ---------------->", ylab = "Cumulative Distribution Function of X : F(x) ---------------->", xaxs = "i", yaxs = "i", main = paste("PLOT OF CDF : \nEmperical by Box-Muller Method \nMean = 0 [500 Values] : "))
+    
+   #legend('topleft', legend = c("Emperical", "Theoretical"), lty = 1, col = c("blue", "red"))
+   
+   #plot(ecdf(arrayhistv), verticals = TRUE, lwd = 2, pch = 46, col = "blue", xlab = "X ---------------->", ylab = "Cumulative Distribution Function of X : F(x) ---------------->", xaxs = "i", yaxs = "i", main = paste("PLOT OF CDF : \nEmperical by Box-Muller Method \nMean = 5 [500 Values] : "))
+   
+   #grid()
+   #legend('topleft', legend = c("Emperical", "Theoretical"), lty = 1, col = c("blue", "red"))
+   
+   #par(new=TRUE)
+   
+   #curve(pnorm(x, mean = 0, sd = sqrt(5)), xaxs = "i", yaxs = "i", lower.tail = FALSE, log.p = FALSE, -8.8, 9.1, col = "red", lwd = 2, axes = FALSE, xlab = "", ylab = "")
+   #dev.copy(jpeg, "Q23(2).jpeg")
+   #dev.off()
+}
+
+generateboxmuller(500)
+

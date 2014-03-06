@@ -1,0 +1,74 @@
+func_rand <- function(val, m){
+	return(val/m);
+}
+
+func_val <- function(val, a, b, m){
+	return(((a*val)+b)%%m);
+}
+
+func <- function(initial, a, b, m, end){
+	count<-1;
+	arr<-array(20);
+	tab<-array();
+
+	for(i in 1:20)
+	{
+		arr[i]=0
+	}
+
+	
+	val <- initial;
+	random <- func_rand(val, m);
+
+	while(count<=end){
+		val <- func_val(val, a, b, m);
+		random <- func_rand(val, m);
+
+		tab[count] = random;
+
+		quot <- round(random/0.05);
+	
+		arr[quot] <- arr[quot] + 1;
+		count <- count+1;
+	}
+
+	max<-0;
+	for(i in 1:20){
+		cat(sprintf("arr[%d]\t%d\n", i, arr[i]));
+		
+		if(arr[i]>max){
+			max=arr[i];
+		}
+	}
+
+	bins<-seq(0, 1, by=0.05);
+	hist(tab, bins,freq = TRUE, include.lowest = TRUE, right = TRUE, density = NULL,
+		angle = 45, col = '#1E90FF', border = NULL,
+		main = paste("Histogram of frequencies for\nxo=", initial, " and total values
+		generated=",end), xlim=range(0,1), ylim=range(0,(max+15)), xlab = arr ,
+		axes = TRUE, plot = TRUE, labels = FALSE);
+
+	dev.copy(jpeg,paste('a=',a,'x0=',initial,'bound=',end,sep="",".jpg"));
+	dev.off();	
+}
+
+main <- function(){
+	a<-c(1000, 10000, 100000);
+	init_value<-8905;
+
+	for(index in 1:3){
+		func(init_value, 16807, 0, (2**31)-1, a[index]);
+	}
+	
+	cat("\n\n\n");
+	
+	for(index in 1:3){
+		func(init_value, 40692, 0, 2147483399, a[index]);
+	}
+	
+	cat("\n\n\n");
+	
+	for(index in 1:3){
+		func(init_value, 40014, 0, 2147483563, a[index]);
+	}
+}

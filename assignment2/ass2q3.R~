@@ -1,0 +1,46 @@
+func_rand <- function(val, m){
+	return(val/m);
+}
+
+func_val <- function(val, a, b, m){
+	return(((a*val)+b)%%m);
+}
+
+func <- function(initial, a, b, m, end){
+	count<-1;
+	arr<-array(20);
+	x<-array();
+	y<-array();
+
+	for(i in 1:20)
+	{
+		arr[i]=0
+	}
+
+	
+	val <- initial;
+	random <- func_rand(val, m);
+
+	val <- func_val(val, a, b, m);
+	random <- func_rand(val, m);
+	prev<-random;
+
+	while(count<=end){
+		val <- func_val(val, a, b, m);
+		random <- func_rand(val, m);
+
+		x[count] = random;
+		y[count] = prev;
+
+		prev = random;
+		count <- count+1;
+	}
+
+	plot(y,x);
+	dev.copy(jpeg,paste("Graph.jpg"));
+	dev.off();	
+}
+
+main <- function(){
+	func(777, 1229, 1, 2048, 1000);
+}

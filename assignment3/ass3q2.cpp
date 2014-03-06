@@ -1,0 +1,108 @@
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+
+#define LL long long
+#define FIB 17
+#define INTERVAL 100000
+
+using namespace std;
+
+double func_rand(LL int val, LL int m){
+	return (double)val/m;
+}
+
+LL int func_val(LL int val, LL int a, LL int b, LL int m){
+	LL next_val;
+	next_val = ((a * val) + b) % m;
+
+	return next_val;
+}
+
+void probab_distribution(LL int array[], int end){
+	LL int pro[100000] = {0}, index, rem, max=-1;
+	
+	for(index = 0; index<end; ++index){
+		rem = array[index]/INTERVAL;
+		if(rem>max)
+			max = rem;
+		++pro[rem];
+	}
+	
+	for(index = 1;index<=max; ++index){
+		pro[index] += pro[index-1];
+	}
+	
+	for(index = 0; index<=max; ++index){
+		printf("%lld %lf\n",(index+1)*INTERVAL, (double)pro[index]/end);
+	}
+}
+
+void function(LL int initial, LL int a, LL int b, LL int m, int end){
+	LL int val, count = 0;
+	LL int index, quot, array[110000], prev, sum;
+	double mean, variance, sum_var, sum_auto, autocorr;
+
+	val = initial;
+
+	for(count = 0; count<FIB; ++count){
+		prev = val;
+		val = func_val(val, a, b, m);
+		
+		printf("%lld , %lld\n", prev, val);
+		array[count] = val;
+	}
+
+	while(count<end){
+		prev = val;
+		val = array[count-17] + array[count-5];
+		val = val % (LL int)pow(2,31);
+		array[count] = val;
+
+		printf("%lld , %lld\n", prev, val);		
+		++count;
+	}
+	
+	sum = 0;
+	for(index = 0; index<end; ++index){
+		sum+=array[index];
+	}
+	mean = (double)sum/end;
+	
+	sum_var = 0.0;
+	for(index = 0; index<end; ++index){
+		sum_var += pow((double)(array[index] - mean), 2);
+	}
+	variance = (double)sum_var/end;
+	
+	printf("\nMean=%lf Variance=%lf\n", mean, variance);
+	
+	if(end == 1000){
+		int lag;
+		sum_auto = 0.0;
+		for(lag = 1;lag<6;++lag){
+			for(index = lag; index<end; ++index){
+				sum_auto +=(double)((double)(array[index] - mean)*(double)(array[index-lag] - mean));
+			}
+			autocorr = (double)sum_auto/sum_var;
+			
+			printf("\nAutocorrelation %d = %lf\n", lag, autocorr);
+		}
+	}
+	
+	if(end == 1000){
+		probab_distribution(array, end);
+	}
+}
+
+int main(){
+	LL int index, a[3] = {1000, 10000, 100000};
+	LL int init_value = 3452;
+
+	for(index = 0; index<3; ++index){
+		function(init_value, 4179, 214, 2147483563, a[index]);
+		cout<<endl;
+	}
+
+	return 0;
+}

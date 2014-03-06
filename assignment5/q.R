@@ -1,0 +1,57 @@
+func_rand <- function(val, m){
+	return(val/m);
+}
+
+func_val <- function(val, a, b, m){
+	next_val <- ((a * val) + b) %% m;
+	return(next_val);
+}
+
+func_f <- function(val){
+	ans = exp(-0.5*((abs(val)-1)**2));
+	return(ans);
+}
+
+func <- function(initial, a, b, m, end){
+	count<-0;
+	#arr[1]<=0.05
+	#arr[2]<=0.30
+	#arr[3]<=0.75
+	#arr[4]<=0.90
+	#arr[5]<=1.00
+	arr<-array(5);
+	for(i in 1:5){
+		arr[i]=0;
+	}
+	
+	val <- func_val(initial, a, b, m);
+	random <- func_rand(val, m);
+	
+	while(count<=end){
+		count = count+1;
+		arr[count] = random;
+		
+		val <- func_val(val, a, b, m);
+		random <- func_rand(val, m);
+	}
+	
+	for(i in 1:end){
+		cat(sprintf("arr[%g]\t%g\n", i, arr[i]));
+	}
+#	bins = seq(0.05, 0.30, 0.75, 0.90, 1.00);
+#	hist(arr, 100,freq = TRUE, include.lowest = TRUE, right = TRUE, density = NULL,
+#		angle = 45, col = '#1E90FF', border = NULL,
+#		main = paste("Histogram of frequencies and total values
+#		generated=",end), xlab = "Random Values" ,
+#		axes = TRUE, plot = TRUE, labels = FALSE);
+	hist(arr)
+	dev.copy(jpeg,'img.jpg');
+	dev.off();	
+}	
+
+init_value <- 113;
+init_value_2 <- 1031;
+bound <- 10;
+
+func(init_value, 16807, 0, 106890, bound);
+

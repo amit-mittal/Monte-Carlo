@@ -1,0 +1,47 @@
+func<-function(x,a,m)
+{
+	c=2.109375;
+	x=(((a%%m)*(x%%m))%%m);
+	u=(x/m);
+	n=0;
+	p=0;
+	q=1;
+	r=0;
+	number<-array(0:0,dim=c(1000))
+	while(n<1000)
+	{
+		x=(((a%%m)*(x%%m))%%m);
+		v=(x/m);
+		if(v<=((20*u*((1-u)**3))/(2.109375)))
+		{
+			n=n+1;
+			if(n==0)
+			{
+				r=u;
+				p=u;
+				q=u;
+			}
+			if(n>0)
+			{
+				if(u>p)
+					p=u;
+				if(u<q)
+					q=u;
+				r=(r*(n/(n+1)))+(u/(n+1));
+			}
+			#if(u==0)
+			#	cat("Hi\n");
+			number[n]=u;
+		}
+		x=(((a%%m)*(x%%m))%%m);
+		u=(x/m);
+		#cat(v,"\t\t\t",n,"\t\t\t",u,"\n");
+		
+	}
+	cat("min=\t",q,"\nmax=\t",p,"\nmean=\t",r,"\n")
+	hist(number,100,main=paste("Histogram for 100 intervals"));
+}
+x=113;
+a=10301;
+m=(2**31)-1;
+func(x,a,m);
